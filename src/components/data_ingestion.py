@@ -5,6 +5,8 @@ from src.logger import logging
 import pandas as pd 
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+from src.components.data_transformation import DataTransformation,DataTransformationConfig
+
 
 @dataclass
 class DataIngestionConfig:
@@ -15,6 +17,7 @@ class DataIngestionConfig:
 class DataIngestion:
     def __init__(self):
         self.ingestion_config = DataIngestionConfig()
+   
     def initiate_data_ingestion(self):
         logging.info("Entered the data ingestion method")
         try:
@@ -27,6 +30,7 @@ class DataIngestion:
             logging.info("Train Test split initiated")
             
             train_set, test_set = train_test_split(df,test_size=0.2,random_state=42)
+            
             train_set.to_csv(self.ingestion_config.train_data_path,index=False,header=True)
             test_set.to_csv(self.ingestion_config.test_data_path,index=False,header=True)
             
@@ -40,4 +44,7 @@ class DataIngestion:
 
 if __name__=='__main__':
     obj = DataIngestion()
-    obj.initiate_data_ingestion()
+    train_data,test_data = obj.initiate_data_ingestion()
+
+    data_transformation = DataTransformation()
+    train_arr,test_arr,_ = data_transformation.initiate_data_transformation(train_data,test_data)
